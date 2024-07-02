@@ -13,7 +13,8 @@
     <title>BhanchaGhar</title>
 </head>
 <body>
-This is Chef
+<a href="{% url 'AddProduct' %}" style="color: white; font-size: 40px;">AddProduct</a>
+<a href="{% url 'MyProduct' %}" style="color: white; font-size: 40px;">Myproduct</a>
 
   <nav class="navbar">
     <img src="{% static 'images/logoo.png' %}" class="navbar-logo" alt="logo" />
@@ -229,7 +230,7 @@ This is Chef
       <div class="chef__container">
         <p>100+ Chefs Online</p>
         <h4>Calling all chefs! Ready to whip up culinary delights in your kitchen.</h4>
-        <button class="chef__btn" onclick="window.location.href=''">Hier now</button>
+        <a href="{% url 'Foods' %}"><button class="chef__btn" onclick="window.location.href=''">Hier now</button></a>
       </div>
     </section>
 

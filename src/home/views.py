@@ -260,19 +260,14 @@ def verify_emailregular(request):
 
 
 def show_product(request):
+    return render(request, 'home/Product.html')
+
+def show_Food(request):
     rooms = Room.objects.all()
 
-    if request.user.is_authenticated:
-        user_profile = UserProfile.objects.get(user=request.user)
+    return render(request, 'home/Foods.html', {'rooms': rooms})
 
-        if user_profile.accountType == "broker":
-            return show_productBroker(request, rooms)
-        else:
-            return render(request, 'home/Product.html', {'rooms': rooms})
-
-    return render(request, 'home/Product.html', {'rooms': rooms})
-
-def show_productBroker(request):
+def show_productBroker(request,):
     return render(request, 'home/ProductBroker.html')
 
 def show_AddProduct(request):
@@ -302,7 +297,7 @@ def show_AddProduct(request):
         )
         room.save()
         messages.add_message(request, messages.SUCCESS, 'Room Added successfully')
-        return redirect('MyProduct')
+        return redirect('Foods')
     
 
     return render(request, 'home/AddProduct.html')
