@@ -22,9 +22,6 @@ def show_successLogin(request):
 def show_selectRegister(request):
     return render(request, 'home/selectregister.html')
 
-def chefs_list(request):
-    return render(request, 'home/chefs_list.html')
-
 def show_login(request):
 
     if request.method =='POST':
@@ -111,18 +108,16 @@ def show_registerBroker(request):
         verification_code = generate_verification_code()
         send_verification_email(email, verification_code, uname)
 
-        # Ensure 'profile' key is added to registration_data
         request.session['registration_data'] = {
             'username': uname,
             'contact_number': contact_number,
             'email': email,
             'gender': gender,
-            'profile_picture': profile_picture_name,
-            'resume': resume_name,
+            'profile_picture_name': profile_picture_name,
+            'resume_name': resume_name,
             'password': password,
             'accountType': accountType,
             'verification_code': verification_code,
-            'profile': None  # Default value for 'profile' to avoid KeyError
         }
 
         return redirect('/verify_emailbroker')
@@ -141,7 +136,6 @@ def verify_emailbroker(request):
             return HttpResponse("Session expired. Please register again.")
 
         if input_code == registration_data['verification_code']:
-            # Create the user account and save the data to the database
             try:
                 user = User.objects.create_user(
                     registration_data['username'],
@@ -152,18 +146,20 @@ def verify_emailbroker(request):
             except IntegrityError:
                 return HttpResponse("Username already exists. Please choose a different username.")
 
+            profile_picture_name = registration_data.get('profile_picture_name')
+            resume_name = registration_data.get('resume_name')
+
             profile = UserProfile(
                 user=user,
                 contact_number=registration_data['contact_number'],
                 email=registration_data['email'],
                 gender=registration_data['gender'],
-                profile=registration_data['profile'],
-                resume=registration_data['resume'],
+                profile=f'static/pfps/{profile_picture_name}' if profile_picture_name else None,
+                resume=f'static/Resumes/{resume_name}' if resume_name else None,
                 accountType=registration_data['accountType']
             )
             profile.save()
 
-            # Clear the session data
             del request.session['registration_data']
 
             return redirect('/LoginSuccess')
@@ -171,45 +167,6 @@ def verify_emailbroker(request):
             return HttpResponse("Invalid verification code.")
 
     return render(request, 'home/verify_emailbroker.html')
-
-def verify_emailregular(request):
-    if request.method == 'POST':
-        input_code = request.POST.get("verification_code").strip()
-        registration_data = request.session.get('registration_data')
-
-        if not registration_data:
-            return HttpResponse("Session expired. Please register again.")
-
-        if input_code == registration_data['verification_code']:
-            # Create the user account and save the data to the database
-            try:
-                user = User.objects.create_user(
-                    registration_data['username'],
-                    registration_data['email'],
-                    registration_data['password']
-                )
-                user.save()
-            except IntegrityError:
-                return HttpResponse("Username already exists. Please choose a different username.")
-
-            profile = UserProfile(
-                user=user,
-                contact_number=registration_data['contact_number'],
-                email=registration_data['email'],
-                gender=registration_data['gender'],
-                profile=registration_data['profile'],
-                accountType=registration_data['accountType']
-            )
-            profile.save()
-
-            # Clear the session data
-            del request.session['registration_data']
-
-            return redirect('/LoginSuccess')
-        else:
-            return HttpResponse("Invalid verification code.")
-
-    return render(request, 'home/verify_emailregular.html')
 
 def show_registerRegular(request):
     if request.method == 'POST':
@@ -263,6 +220,43 @@ def show_registerRegular(request):
         
 
     return render(request, 'home/registerregular.html')
+
+def verify_emailregular(request):
+    if request.method == 'POST':
+        input_code = request.POST.get("verification_code").strip()
+        registration_data = request.session.get('registration_data')
+
+        if not registration_data:
+            return HttpResponse("Session expired. Please register again.")
+
+        if input_code == registration_data['verification_code']:
+            # Create the user account and save the data to the database
+            user = User.objects.create_user(
+                registration_data['username'],
+                registration_data['email'],
+                registration_data['password']
+            )
+            user.save()
+
+            profile = UserProfile(
+                user=user,
+                contact_number=registration_data['contact_number'],
+                email=registration_data['email'],
+                gender=registration_data['gender'],
+                profile=registration_data['profile'],
+                accountType=registration_data['accountType']
+            )
+            profile.save()
+
+            # Clear the session data
+            del request.session['registration_data']
+
+            return redirect('/LoginSuccess')
+        else:
+            return HttpResponse("Invalid verification code.")
+
+    return render(request, 'home/verify_emailregular.html')
+
 
 
 def show_product(request):

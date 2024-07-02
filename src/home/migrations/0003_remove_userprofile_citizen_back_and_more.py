@@ -12,6 +12,14 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RemoveField(
             model_name='userprofile',
+            name='Citizen_back',
+        ),
+        migrations.RemoveField(
+            model_name='userprofile',
+            name='Citizen_front',
+        ),
+        migrations.RemoveField(
+            model_name='userprofile',
             name='profile_picture',
         ),
         migrations.AddField(

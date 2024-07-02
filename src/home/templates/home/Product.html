@@ -13,6 +13,8 @@
     <title>BhanchaGhar</title>
 </head>
 <body>
+
+This is Normal
   <nav class="navbar">
     <img src="{% static 'images/logoo.png' %}" class="navbar-logo" alt="logo" />
     <ul class="navbar-list">
@@ -24,15 +26,19 @@
     <div class="profile-dropdown">
         <div onclick="toggle()" class="profile-dropdown-btn">
             <div class="profile-img">
+                {% if user.is_authenticated %}
                     <div class="profile-img" style="background-image: url('{{ user.profile.avatar.url }}');"></div>
+                {% else %}
+                    <!-- <div class="profile-img" style="background-image: url('{% static 'images/default_avatar.jpg' %}');"></div> -->
+                {% endif %}
             </div>
-            <span>{{ user.username }}<i class="fa-solid fa-angle-down"></i></span>
+            <span>{{ user.username }} &ensp;<i class="fa-solid fa-angle-down"></i></span>
         </div>
         <ul class="profile-dropdown-list">
             <li class="profile-dropdown-list-item">
-                <a href="{% url 'profile'%}">
+                <a href="">
                     <i class="fa-regular fa-user"></i>
-                    Profile
+                    Edit Profile
                 </a>
             </li>
             <li class="profile-dropdown-list-item">
@@ -223,7 +229,7 @@
       <div class="chef__container">
         <p>100+ Chefs Online</p>
         <h4>Calling all chefs! Ready to whip up culinary delights in your kitchen.</h4>
-        <button class="chef__btn" onclick="window.location.href='{% url 'chef_list' %}'">Order now</button>
+        <button class="chef__btn">Order now</button>
       </div>
     </section>
 
